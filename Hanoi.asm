@@ -125,16 +125,17 @@ imprime:
 
 
 integer_string:
-  xor ebx, ebx
-.proximo_digito:
-  movzx eax, byte[esi]
-  inc esi
-  sub al,'0'
-  imul ebx, 10
-  add ebx, eax
-  loop .proximo_digito
-  mov eax, ebx
-  ret
+  xor ebx, ebx          ; Limpa o registrador ebx para garantir que esteja vazio antes de iniciar o processamento.
+.proximo_digito:       ; Rótulo para o início do loop que percorre os caracteres da string.
+  movzx eax, byte [esi]   ; Move o próximo byte da string para o registrador eax, sem sinal.
+  inc esi                ; Incrementa o ponteiro de origem da string para acessar o próximo caractere.
+  sub al, '0'            ; Subtrai o valor ASCII '0' do caractere atual para converter de ASCII para valor numérico.
+  imul ebx, 10           ; Multiplica o valor acumulado (na base 10) por 10.
+  add ebx, eax           ; Adiciona o valor numérico do caractere atual ao acumulador.
+  loop .proximo_digito  ; Continua o loop até que todos os caracteres da string sejam processados.
+  mov eax, ebx           ; Move o resultado da conversão (valor numérico) para o registrador eax.
+  ret                    ; Retorna com o valor convertido.
+
 
 section .data
     entrada db 128
