@@ -52,7 +52,7 @@ impressao:
     push dword 3
     push dword 1
     push eax
-    call hanoi
+    call funcao_hanoi
 
     ; Impressão "Concluído!"
     mov eax, 4
@@ -66,7 +66,7 @@ impressao:
     mov ebx, 0
     int 0x80
 
-hanoi:
+funcao_hanoi:
     push ebp
     mov ebp, esp
 
@@ -80,7 +80,7 @@ hanoi:
     push dword [ebp+12]
     dec eax
     push dword eax
-    call hanoi
+    call funcao_hanoi
     add esp, 16
 
     ; Movimento de disco da torre origem para a torre destino
@@ -97,7 +97,7 @@ hanoi:
     mov eax, [ebp+8]
     dec eax
     push dword eax
-    call hanoi
+    call funcao_hanoi
 
 desempilhar:
     mov esp, ebp
@@ -121,7 +121,7 @@ imprime:
     mov [torre_ida], al
 
     mov edx, length
-    mov ecx, msg
+    mov ecx, mensagem
     mov ebx, 1
     mov eax, 4
     int 0x80
@@ -147,11 +147,11 @@ integer_string:
 
 section .data
     entrada db 128, 0xa
-    msg: db " Mova disco ", 0
+    mensagem: db " Mova disco ", 0
     disco: db '  da Torre '
     torre_saida: db '  para a Torre '
     torre_ida: db ' ', 0xa
-    length equ $ - msg
+    length equ $ - mensagem
 
     concluido: db "Concluído!", 0xa
     len_concluido equ $ - concluido
