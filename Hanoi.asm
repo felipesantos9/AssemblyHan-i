@@ -2,32 +2,9 @@ section .text
     global _start
 
 _start:
-    ; Leitura da entrada
-    mov eax, 3
-    mov ebx, 0
-    mov ecx, entrada
-    mov edx, 128
-    int 0x80
 
-    ; Impressão da mensagem inicial
-    mov eax, 4
-    mov ebx, 1
-    mov ecx, inicio
-    mov edx, 27
-    int 128
-
-    ; Impressão do número de discos
-    mov eax, 4
-    mov ebx, 1
-    mov ecx, entrada
-    mov edx, 1
-    int 0x80
-    
-
-    ; Inicializa a execução do algoritmo Hanoi
-    lea esi, [entrada]
-    mov ecx, 1
-    call integer_string
+    ; Inicializa a execução do algoritmo Hanoi com 3 discos
+    mov eax, 10
     push dword 2
     push dword 3
     push dword 1
@@ -39,12 +16,12 @@ _start:
     mov ebx, 1
     mov ecx, concluido
     mov edx, len_concluido
-    int 128
+    int 0x80
 
     ; Termina o programa
     mov eax, 1
     mov ebx, 0
-    int 128
+    int 0x80
 
 hanoi:
     push ebp
@@ -101,26 +78,13 @@ imprime:
     mov ecx, msg
     mov ebx, 1
     mov eax, 4
-    int 128
+    int 0x80
 
     mov esp, ebp
     pop ebp
     ret
 
-integer_string:
-  xor ebx, ebx
-.proximo_digito:
-  movzx eax, byte[esi]
-  inc esi
-  sub al,'0'
-  imul ebx, 10
-  add ebx, eax
-  loop .proximo_digito
-  mov eax, ebx
-  ret
-
 section .data
-    entrada db 128
     msg: db " Mova disco ", 0
     disco: db '  da Torre '
     torre_saida: db '  para a Torre ' 
@@ -129,7 +93,4 @@ section .data
 
     concluido: db "Concluído!", 0xa
     len_concluido equ $ - concluido
-    
-    inicio: db " Discos na torre de hanoi: ", 0xa
-    len_inicio equ $ - inicio
     
