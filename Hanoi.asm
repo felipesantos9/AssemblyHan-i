@@ -4,141 +4,141 @@ section .text
 _start:
 
     ; Impressão do prompt
-    mov eax, 4              ; syscall write (sys_write)
-    mov ebx, 1              ; descriptor de arquivo stdout
-    mov ecx, prompt         ; ponteiro para o prompt
-    mov edx, len_prompt     ; tamanho do prompt
-    int 0x80                ; chamada de sistema para escrever
+    mov eax, 4             
+    mov ebx, 1          
+    mov ecx, prompt         
+    mov edx, len_prompt     
+    int 0x80                 
     
     ; Leitura da entrada
-    mov eax, 3              ; syscall read (sys_read)
-    mov ebx, 0              ; descriptor de arquivo stdin
-    mov ecx, entrada        ; ponteiro para o buffer de entrada
-    mov edx, 128            ; tamanho máximo da entrada
-    int 0x80                ; chamada de sistema para ler
+    mov eax, 3              
+    mov ebx, 0              
+    mov ecx, entrada        
+    mov edx, 128            
+    int 0x80                
 
 
     ; Impressão da mensagem inicial
-    mov eax, 4              ; syscall write (sys_write)
-    mov ebx, 1              ; descriptor de arquivo stdout
-    mov ecx, inicio         ; ponteiro para a mensagem inicial
-    mov edx, 27             ; tamanho da mensagem
-    int 0x80                ; chamada de sistema para escrever
+    mov eax, 4              
+    mov ebx, 1              
+    mov ecx, inicio         
+    mov edx, 27             
+    int 0x80                
 
 
     ; Impressão do número de discos
-    mov eax, 4              ; syscall write (sys_write)
-    mov ebx, 1              ; descriptor de arquivo stdout
-    mov ecx, entrada        ; ponteiro para o buffer de entrada (contém o número de discos)
-    mov edx, 1              ; tamanho do número (apenas 1 byte)
-    int 0x80                ; chamada de sistema para escrever
+    mov eax, 4              
+    mov ebx, 1              
+    mov ecx, entrada        
+    mov edx, 1            
+    int 0x80                
    
 
     ; Inicializa a execução do algoritmo Hanoi
-    lea esi, [entrada]      ; carrega o endereço do buffer de entrada em esi
-    mov ecx, 1              ; inicializa ecx com 1
-    call integer_string     ; chama a função para converter a entrada em um número
-    push dword 2            ; push do terceiro pino (destino)
-    push dword 3            ; push do segundo pino (auxiliar)
-    push dword 1            ; push do primeiro pino (origem)
-    push eax                ; push do número de discos
-    call hanoi              ; chama a função hanoi
+    lea esi, [entrada]      
+    mov ecx, 1              
+    call integer_string     ; converter a entrada em um número
+    push dword 2            ; destino
+    push dword 3            ; auxiliar
+    push dword 1            ; origem
+    push eax                ; número de discos
+    call hanoi              
 
 
     ; Impressão "Concluído!"
-    mov eax, 4                  ; syscall write (sys_write)
-    mov ebx, 1                  ; descriptor de arquivo stdout
-    mov ecx, concluido          ; ponteiro para a mensagem de saída
-    mov edx, len_concluido      ; tamanho da mensagem de saída
-    int 0x80                    ; chamada de sistema para escrever
+    mov eax, 4                  
+    mov ebx, 1              
+    mov ecx, concluido          
+    mov edx, len_concluido      
+    int 0x80                    
 
     ; Termina o programa
-    mov eax, 1               ; Chama a syscall para sair do programa
-    mov ebx, 0               ; Indica que o programa foi executado com sucesso
-    int 0x80                 ; Chamada de sistema para sair
+    mov eax, 1               
+    mov ebx, 0               
+    int 0x80                 
 
 
 hanoi:
-    push ebp                 ; Salva o valor de ebp na pilha
-    mov ebp, esp             ; Configura ebp para apontar para o início da pilha
+    push ebp                 
+    mov ebp, esp             
 
-    mov eax, [ebp+8]         ; Move o valor do primeiro parâmetro (número de discos) para eax
-    cmp eax, 0               ; Compara com zero (caso base)
-    je desempilhar           ; Se o número de discos for zero, retorna
+    mov eax, [ebp+8]         
+    cmp eax, 0               ; caso base
+    je desempilhar           
 
     ; Chamada recursiva para mover n-1 discos da torre origem para a torre auxiliar
-    push dword [ebp+16]      ; Push da terceira torre (destino)
-    push dword [ebp+20]      ; Push  da segunda torre (origem)
-    push dword [ebp+12]      ; Push da primeira torre (auxiliar)
-    dec eax                  ; Decrementa o número de discos
-    push dword eax           ; Push do número de discos decrementado
-    call hanoi               ; Chama recursivamente a função hanoi
-    add esp, 16              ; Limpa os parâmetros da pilha
+    push dword [ebp+16]      
+    push dword [ebp+20]      
+    push dword [ebp+12]     
+    dec eax                 
+    push dword eax           
+    call hanoi               
+    add esp, 16              
 
     ; Movimento de disco da torre origem para a torre destino
-    push dword [ebp+16]      ; Push da terceira torre (destino)
-    push dword [ebp+12]      ; Push da primeira torre (origem)
-    push dword [ebp+8]       ; Push do número de discos
-    call imprime             ; Chama a função imprime para imprimir a ação
-    add esp, 12              ; Limpa os parâmetros da pilha
+    push dword [ebp+16]      
+    push dword [ebp+12]      
+    push dword [ebp+8]       
+    call imprime            
+    add esp, 12              
 
     ; Chamada recursiva para mover n-1 discos da torre auxiliar para a torre destino
-    push dword [ebp+12]      ; Push da primeira torre (destino)
-    push dword [ebp+16]      ; Push da terceira torre (origem)
-    push dword [ebp+20]      ; Push  da segunda torre (auxiliar)
-    mov eax, [ebp+8]         ; Move novamente o número de discos para eax
-    dec eax                  ; Decrementa o número de discos
-    push dword eax           ; Push do número de discos decrementado
-    call hanoi               ; Chama recursivamente a função hanoi
+    push dword [ebp+12]      
+    push dword [ebp+16]      
+    push dword [ebp+20]      
+    mov eax, [ebp+8]         
+    dec eax                  
+    push dword eax           
+    call hanoi               
 
 desempilhar:
-    mov esp, ebp   ; Restaura o ponteiro de pilha (esp) para o valor que estava salvo em ebp
-    pop ebp        ; Desempilha o valor de ebp, restaurando o valor do ponteiro de base da pilha
-    ret            ; Retorna à função chamadora
+    mov esp, ebp   
+    pop ebp        ; Desempilha o valor de ebp
+    ret            
 
 
 imprime:
-    push ebp         ; Salva o ponteiro de base da pilha atual
-    mov ebp, esp     ; Configura ebp para apontar para o início da pilha atual
+    push ebp         
+    mov ebp, esp     
 
-    mov eax, [ebp + 8]    ; Move o primeiro parâmetro (número do disco) para eax
-    add al, 48            ; Converte o número do disco em seu caractere ASCII equivalente
-    mov [disco], al       ; Armazena o caractere em disco
+    mov eax, [ebp + 8]    
+    add al, 48            ; Converte o número do disco em ASCII
+    mov [disco], al       
 
-    mov eax, [ebp + 12]   ; Move o segundo parâmetro (torre destino) para eax
-    add al, 64            ; Converte o número da torre em seu caractere ASCII equivalente
-    mov [torre_saida], al ; Armazena o caractere em torre_saida
+    mov eax, [ebp + 12]   
+    add al, 64            ; Converte o número da torre em ASCII
+    mov [torre_saida], al 
 
-    mov eax, [ebp + 16]   ; Move o terceiro parâmetro (torre origem) para eax
-    add al, 64            ; Converte o número da torre em seu caractere ASCII equivalente
-    mov [torre_ida], al   ; Armazena o caractere em torre_ida
+    mov eax, [ebp + 16]   
+    add al, 64            ; Converte o número da torre em ASCII 
+    mov [torre_ida], al   
 
-    mov edx, length       ; Move o tamanho da string para edx
-    mov ecx, msg          ; Move o endereço da string para ecx
-    mov ebx, 1            ; Especifica a saída padrão (stdout)
-    mov eax, 4            ; Chama a interrupção do sistema para escrever
-    int 0x80               ; Chama a interrupção do sistema
+    mov edx, length       
+    mov ecx, msg          
+    mov ebx, 1            
+    mov eax, 4            
+    int 0x80               
 
-    mov esp, ebp   ; Restaura o ponteiro de pilha (esp) para o valor que estava salvo em ebp
-    pop ebp        ; Desempilha o valor de ebp, restaurando o valor do ponteiro de base da pilha
-    ret            ; Retorna à função chamadora
+    mov esp, ebp   
+    pop ebp        
+    ret            
 
 
 integer_string:
-  xor ebx, ebx          ; Limpa o registrador ebx para garantir que esteja vazio antes de iniciar o processamento.
+  xor ebx, ebx          ; Limpa o registrador ebx
 .proximo_digito:       ; Rótulo para o início do loop que percorre os caracteres da string.
-  movzx eax, byte [esi]   ; Move o próximo byte da string para o registrador eax, sem sinal.
-  inc esi                ; Incrementa o ponteiro de origem da string para acessar o próximo caractere.
-  sub al, '0'            ; Subtrai o valor ASCII '0' do caractere atual para converter de ASCII para valor numérico.
-  imul ebx, 10           ; Multiplica o valor acumulado (na base 10) por 10.
-  add ebx, eax           ; Adiciona o valor numérico do caractere atual ao acumulador.
-  loop .proximo_digito  ; Continua o loop até que todos os caracteres da string sejam processados.
-  mov eax, ebx           ; Move o resultado da conversão (valor numérico) para o registrador eax.
-  ret                    ; Retorna com o valor convertido.
+  movzx eax, byte [esi]   
+  inc esi               
+  sub al, '0'            ; Subtrai o valor ASCII '0' para converter para número
+  imul ebx, 10           
+  add ebx, eax          
+  loop .proximo_digito  
+  mov eax, ebx           
+  ret                  
 
 
 section .data
-    entrada db 128
+    entrada db 128, 0xa
     msg: db " Mova disco ", 0
     disco: db '  da Torre '
     torre_saida: db '  para a Torre ' 
