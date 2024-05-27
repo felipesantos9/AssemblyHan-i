@@ -27,7 +27,9 @@ _start:
     
 
     ; Inicializa a execução do algoritmo Hanoi com 3 discos
-    mov eax, 3
+    lea esi, [entrada]
+    mov ecx, 1
+    call integer_string
     push dword 2
     push dword 3
     push dword 1
@@ -106,6 +108,18 @@ imprime:
     mov esp, ebp
     pop ebp
     ret
+
+integer_string:
+  xor ebx, ebx
+.proximo_digito:
+  movzx eax, byte[esi]
+  inc esi
+  sub al,'0'
+  imul ebx, 10
+  add ebx, eax
+  loop .proximo_digito
+  mov eax, ebx
+  ret
 
 section .data
     entrada db 128
