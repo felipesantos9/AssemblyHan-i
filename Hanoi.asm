@@ -28,7 +28,7 @@ _start:
     jmp impressao
 
 um_digito:
-    mov ecx, 1  ; Se for menor que 10, é um dígito
+    mov ecx, 1  
 
 impressao:
     ; Impressão da mensagem inicial
@@ -47,7 +47,6 @@ impressao:
 
     ; Inicializa a execução do algoritmo Hanoi
     lea esi, [entrada]
-    mov ecx, 1
     call integer_string
     push dword 2
     push dword 3
