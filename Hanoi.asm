@@ -2,31 +2,29 @@ section .text
     global _start
 
 _start:
+    ; Leitura da entrada
+    mov eax, 3
+    mov ebx, 0
+    mov ecx, entrada
+    mov edx, 128
+    int 0x80
 
-            ; sys_read (file descriptor 0, buffer, length)
-    mov eax, 3              ; syscall number for sys_read
-    mov ebx, 0              ; file descriptor 0 (stdin)
-    mov ecx, entrada         ; buffer to store the input
-    mov edx, 128             ; max number of bytes to read (buffer length)
-    int 0x80                ; call kernel
-    ; Imprime "Algoritmo da Torre de Hanoi com x discos"
+    ; Impressão da mensagem inicial
     mov eax, 4
     mov ebx, 1
     mov ecx, inicio
     mov edx, 27
     int 128
 
-
-
-    ; sys_write (file descriptor 1, buffer, number of bytes read)
-    mov eax, 4              ; syscall number for sys_write
-    mov ebx, 1              ; file descriptor 1 (stdout)
-    mov ecx, entrada         ; buffer to write from
-    mov edx, 1            ; number of bytes to write (the actual number read)
-    int 0x80                ; call kernel
+    ; Impressão do número de discos
+    mov eax, 4
+    mov ebx, 1
+    mov ecx, entrada
+    mov edx, 1
+    int 0x80
     
 
-    ; Inicializa a execução do algoritmo Hanoi com 3 discos
+    ; Inicializa a execução do algoritmo Hanoi
     lea esi, [entrada]
     mov ecx, 1
     call integer_string
