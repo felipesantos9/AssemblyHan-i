@@ -117,7 +117,7 @@ imprime:
     mov ecx, msg          ; Move o endereço da string para ecx
     mov ebx, 1            ; Especifica a saída padrão (stdout)
     mov eax, 4            ; Chama a interrupção do sistema para escrever
-    int 128               ; Chama a interrupção do sistema
+    int 0x80               ; Chama a interrupção do sistema
 
     mov esp, ebp   ; Restaura o ponteiro de pilha (esp) para o valor que estava salvo em ebp
     pop ebp        ; Desempilha o valor de ebp, restaurando o valor do ponteiro de base da pilha
